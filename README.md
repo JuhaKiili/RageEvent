@@ -30,5 +30,5 @@ No.
 
 **What good is it then?**
 
-It's reasonably performant, automatically handles null references and doesn't require a lot of code.
+It's reasonably performant, automatically cleans up null references and doesn't require a lot of code.
 
