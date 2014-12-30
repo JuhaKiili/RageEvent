@@ -2,7 +2,7 @@ RageEvent
 =========
 
 Weakly typed event system for Unity.
-
+___
 ### Caller
 ```C#
 EventManager.Trigger("MyEvent", 1f);
@@ -20,17 +20,14 @@ EventManager.Trigger("MyEvent", 1f);
 		Debug.Log(f);
 	}
 ```
-
-
+___
 **Is this the most performant event system for Unity?**
 
 No.
 
-
 **Is this the most robust and safe event system for Unity?**
 
 No.
-
 
 **What good is it then?**
 
