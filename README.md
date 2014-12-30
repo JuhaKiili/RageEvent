@@ -21,15 +21,15 @@ EventManager.Trigger("MyEvent", 1f);
 	}
 ```
 
-### Is this the most performant event system for Unity?
+#### Is this the most performant event system for Unity?
 
 No.
 
-### Is this the most robust and safe event system for Unity?
+#### Is this the most robust and safe event system for Unity?
 
 No.
 
-### What good is it then?
+#### What good is it then?
 
 You don't need to worry about null checks or write a lot of code. Don't use this for big & complicated projects!
 
