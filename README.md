@@ -7,7 +7,6 @@ ___
 ```C#
 EventManager.Trigger("MyEvent", 1f);
 ```
-
 ### Listener
 ```C#
 	void Awake () {
