@@ -6,7 +6,7 @@ Weakly typed event system for Unity.
 Caller:
 ```C#
 EventManager.Trigger("MyEvent", 1f);
-'''
+```
 
 Listener:
 ```C#
