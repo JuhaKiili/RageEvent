@@ -31,5 +31,5 @@ No.
 
 **What good is it then?**
 
-You don't need to worry about null checks or write a lot of code. Don't use this for big & complicated projects!
+You don't need to worry about null checks or write a lot of code. Not for big & complicated projects!
 
