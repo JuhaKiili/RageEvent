@@ -3,7 +3,7 @@ RageEvent
 
 Weakly typed event system for Unity.
 
-'''C#
+```C#
 using UnityEngine;
 using RageEvent;
 
@@ -18,7 +18,7 @@ public class ScriptA : MonoBehaviour {
 		Debug.Log(f);
 	}
 }
-'''
+```
 
 RageEvent released under MIT license
 
