@@ -12,3 +12,5 @@
 *.PNG
 *.mat
 *.suo
+Assets/ScriptA.cs
+Assets/ScriptB.cs
