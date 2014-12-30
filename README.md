@@ -3,7 +3,7 @@ RageEvent
 
 Weakly typed event system for Unity.
 
-### Caller
+*Caller*
 ```C#
 EventManager.Trigger("MyEvent", 1f);
 ```
