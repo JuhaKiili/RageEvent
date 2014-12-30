@@ -3,11 +3,13 @@ RageEvent
 
 Weakly typed event system for Unity.
 
+Caller:
 ```C#
-using UnityEngine;
-using RageEvent;
+EventManager.Trigger("MyEvent", 1f);
+'''
 
-public class ScriptA : MonoBehaviour {
+Listener:
+```C#
 	void Awake () {
 		EventManager.Initialize(this);
 	}
@@ -17,7 +19,6 @@ public class ScriptA : MonoBehaviour {
 		float f = (float) parameters[0];
 		Debug.Log(f);
 	}
-}
 ```
 
 RageEvent released under MIT license
