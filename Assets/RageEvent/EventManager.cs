@@ -22,10 +22,12 @@ namespace RageEvent
 		private const float k_GCFrequency = 1f;
 		private static float m_TimeSinceLastGC = 0f;
 		private static Dictionary<string, Dictionary<int, Action<object[]>>> s_Listeners;
+		private static List<int> s_NullTargets;
 		
 		public static void Initialize ()
 		{
 			s_Listeners = new Dictionary<string, Dictionary<int, Action<object[]>>> ();
+			s_NullTargets = new List<int>();
 		}
 
 		public static void Initialize (Object target)
@@ -82,7 +84,6 @@ namespace RageEvent
 			if (!s_Listeners.ContainsKey (eventName))
 				return;
 
-			List<int> nullTargets = new List<int> ();
 			Dictionary<int, Action<object[]>> methodCache = s_Listeners[eventName];
 			foreach (KeyValuePair<int, Action<object[]>> item in methodCache)
 			{
@@ -93,12 +94,14 @@ namespace RageEvent
 				else
 				{
 					Debug.LogWarning("Trying to trigger on null target. EventName: " + eventName);
-					nullTargets.Add (item.Key);
+					s_NullTargets.Add(item.Key);
 				}
 			}
 
-			foreach (int key in nullTargets)
+			foreach (int key in s_NullTargets)
 				methodCache.Remove (key);
+
+			s_NullTargets.Clear();
 		}
 
 		public static void GarbageCollect ()
