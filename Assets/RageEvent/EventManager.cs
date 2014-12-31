@@ -22,11 +22,13 @@ namespace RageEvent
 		private const float k_GCFrequency = 1f;
 		private static float m_TimeSinceLastGC = 0f;
 		private static Dictionary<string, Dictionary<int, Action<object[]>>> s_Listeners;
+		private static Dictionary<string, Dictionary<int, Action>> s_ListenersWithoutParameters;
 		private static List<int> s_NullTargets;
 		
 		public static void Initialize ()
 		{
 			s_Listeners = new Dictionary<string, Dictionary<int, Action<object[]>>> ();
+			s_ListenersWithoutParameters = new Dictionary<string, Dictionary<int, Action>>();
 			s_NullTargets = new List<int>();
 		}
 
@@ -66,17 +68,39 @@ namespace RageEvent
 				return;
 			}
 
-			Delegate newDelegate = Delegate.CreateDelegate (typeof(Action<object[]>), target, methodInfo);
+			if (methodInfo.GetParameters().Length > 0)
+				ListenEventWithParameters(target, eventName, methodInfo);
+			else
+				ListenEventWithoutParameters(target, eventName, methodInfo);
+		}
 
-			if (!s_Listeners.ContainsKey (eventName))
-				s_Listeners.Add (eventName, new Dictionary<int, Action<object[]>> ());
+		private static void ListenEventWithoutParameters(object target, string eventName, MethodInfo methodInfo)
+		{
+			Delegate newDelegate = Delegate.CreateDelegate(typeof (Action), target, methodInfo);
+			if (!s_ListenersWithoutParameters.ContainsKey(eventName))
+				s_ListenersWithoutParameters.Add(eventName, new Dictionary<int, Action>());
+
+			Dictionary<int, Action> methodCache = s_ListenersWithoutParameters[eventName];
+
+			if (!methodCache.ContainsKey(target.GetHashCode()))
+				methodCache.Add(target.GetHashCode(), (Action) newDelegate);
+			else
+				Debug.LogError("Trying to listen when already listening. Caller: " + target + ", eventName: " + eventName);
+		}
+
+		private static void ListenEventWithParameters(object target, string eventName, MethodInfo methodInfo)
+		{
+			Delegate newDelegate = Delegate.CreateDelegate(typeof (Action<object[]>), target, methodInfo);
+
+			if (!s_Listeners.ContainsKey(eventName))
+				s_Listeners.Add(eventName, new Dictionary<int, Action<object[]>>());
 
 			Dictionary<int, Action<object[]>> methodCache = s_Listeners[eventName];
 
 			if (!methodCache.ContainsKey(target.GetHashCode()))
-				methodCache.Add (target.GetHashCode(), (Action<object[]>)newDelegate);
+				methodCache.Add(target.GetHashCode(), (Action<object[]>) newDelegate);
 			else
-				Debug.LogError ("Trying to listen when already listening. Caller: " + target + ", eventName: " + eventName);
+				Debug.LogError("Trying to listen when already listening. Caller: " + target + ", eventName: " + eventName);
 		}
 
 		public static void Trigger (string eventName, params object[] parameters)
@@ -100,6 +124,31 @@ namespace RageEvent
 
 			foreach (int key in s_NullTargets)
 				methodCache.Remove (key);
+
+			s_NullTargets.Clear();
+		}
+
+		public static void Trigger(string eventName)
+		{
+			if (!s_ListenersWithoutParameters.ContainsKey(eventName))
+				return;
+
+			Dictionary<int, Action> methodCache = s_ListenersWithoutParameters[eventName];
+			foreach (KeyValuePair<int, Action> item in methodCache)
+			{
+				if (item.Value.Target != null)
+				{
+					item.Value.Invoke();
+				}
+				else
+				{
+					Debug.LogWarning("Trying to trigger on null target. EventName: " + eventName);
+					s_NullTargets.Add(item.Key);
+				}
+			}
+
+			foreach (int key in s_NullTargets)
+				methodCache.Remove(key);
 
 			s_NullTargets.Clear();
 		}
